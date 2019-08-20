@@ -1,0 +1,19 @@
+stages:
+  - sanity
+  - build
+  
+sanity-check:
+  stage: sanity
+  script:
+    - export
+  tags:
+    - grunner4wetry
+
+build-broadcom:
+  stage: build
+  script:
+    - make init
+    - make configure PLATFORM=broadcom
+    - make all
+  tags:
+    - grunner4wetry
