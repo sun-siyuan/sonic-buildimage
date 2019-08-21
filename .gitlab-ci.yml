@@ -14,6 +14,7 @@ build-broadcom:
   script:
     - make init
     - make configure PLATFORM=broadcom
-    - make all
+    - make target/sonic-broadcom.bin
+    - sudo chown -R gitlab-runner:gitlab-runner fsroot/var    
   tags:
     - grunner4wetry
