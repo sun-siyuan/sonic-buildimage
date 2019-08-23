@@ -7,7 +7,7 @@ sanity-check:
   script:
     - export
   tags:
-    - grunner4wetry
+    - redding4wetry
 
 build-broadcom:
   stage: build
@@ -17,4 +17,4 @@ build-broadcom:
     - make target/sonic-broadcom.bin
     - sudo chown -R gitlab-runner:gitlab-runner fsroot/*
   tags:
-    - grunner4wetry
+    - redding4wetry
