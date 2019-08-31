@@ -9,6 +9,17 @@ sanity-check:
   tags:
     - redding4wetry
 
+build-broadcom:
+  stage: build
+  script:
+    - make init
+    - make configure PLATFORM=broadcom
+    - make target/sonic-broadcom.bin
+    - sudo chown -R gitlab-runner:gitlab-runner fsroot/*
+    - mv target ~/saved/target.brcm.$$
+  tags:
+    - redding4wetry
+
 build-broadcom-kdump:
   stage: build
   script:
@@ -16,6 +27,6 @@ build-broadcom-kdump:
     - make configure PLATFORM=broadcom
     - make SONIC_ENABLE_KDUMP=y target/sonic-broadcom.bin
     - sudo chown -R gitlab-runner:gitlab-runner fsroot/*
-    - mv target ~/saved/target.$$
+    - mv target ~/saved/target.brcm.kdump.$$
   tags:
     - redding4wetry
