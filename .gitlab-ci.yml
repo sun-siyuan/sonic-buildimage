@@ -1,7 +1,8 @@
 stages:
   - sanity
   - build
-  
+  - test
+
 sanity-check:
   stage: sanity
   script:
@@ -16,9 +17,13 @@ build-broadcom:
     - make configure PLATFORM=broadcom
     - make target/sonic-broadcom.bin
     - sudo chown -R gitlab-runner:gitlab-runner fsroot/*
-    - mv target ~/saved/target.brcm.$$
+    - mv target ~/workspace/res/sonic/pkgs/gitlab-runner/target.$CI_JOB_ID
+    - pushd ~/workspace/res/sonic/pkgs/gitlab-runner
+    - ln -sfn target.$CI_JOB_ID target.cur
+    - popd
   tags:
     - redding4wetry
+  only:
 
 build-broadcom-kdump:
   stage: build
@@ -27,6 +32,23 @@ build-broadcom-kdump:
     - make configure PLATFORM=broadcom
     - make SONIC_ENABLE_KDUMP=y target/sonic-broadcom.bin
     - sudo chown -R gitlab-runner:gitlab-runner fsroot/*
-    - mv target ~/saved/target.brcm.kdump.$$
+    - mv target ~/workspace/res/sonic/pkgs/gitlab-runner/target.kdump.$CI_JOB_ID
+    - pushd ~/workspace/res/sonic/pkgs/gitlab-runner
+    - ln -sfn target.kdump.$CI_JOB_ID target.cur.kdump
+    - popd
   tags:
     - redding4wetry
+  only:
+#   - skip_all_branch
+
+test:
+  stage: test
+  script:
+    - git clone git@gitlab.com:gl4sun/integration.git
+    - pushd integration
+    - checkout ali
+    - pushd pipeline/kdump/driver
+    - kdump.sh /tmp/stop /tmp/kdump.log reminder4sun@hotmail.com ~/workspace/res/sonic/pkgs/gitlab-runner/target.cur
+    - popd
+  tags:
+   - redding4wetry
