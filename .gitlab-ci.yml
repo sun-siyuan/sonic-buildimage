@@ -16,14 +16,13 @@ build-broadcom:
     - make init
     - make configure PLATFORM=broadcom
     - make target/sonic-broadcom.bin
-    - sudo chown -R gitlab-runner:gitlab-runner fsroot/*
-    - mv target ~/workspace/res/sonic/pkgs/gitlab-runner/target.$CI_JOB_ID
+    - sudo chown -R ${LOGNAME}:${LOGNAME} fsroot/*
+    - mv target ~/workspace/res/sonic/pkgs/gitlab-runner/target.${CI_JOB_ID}
     - pushd ~/workspace/res/sonic/pkgs/gitlab-runner
-    - ln -sfn target.$CI_JOB_ID target.cur
+    - ln -sfn target.${CI_JOB_ID} target.cur
     - popd
   tags:
     - redding4wetry
-  only:
 
 build-broadcom-kdump:
   stage: build
@@ -31,15 +30,14 @@ build-broadcom-kdump:
     - make init
     - make configure PLATFORM=broadcom
     - make SONIC_ENABLE_KDUMP=y target/sonic-broadcom.bin
-    - sudo chown -R gitlab-runner:gitlab-runner fsroot/*
-    - mv target ~/workspace/res/sonic/pkgs/gitlab-runner/target.kdump.$CI_JOB_ID
+    - sudo chown -R ${LOGNAME}:${LOGNAME} fsroot/*
+    - mv target ~/workspace/res/sonic/pkgs/gitlab-runner/target.kdump.${CI_JOB_ID}
     - pushd ~/workspace/res/sonic/pkgs/gitlab-runner
-    - ln -sfn target.kdump.$CI_JOB_ID target.cur.kdump
+    - ln -sfn target.kdump.${CI_JOB_ID} target.cur.kdump
     - popd
   tags:
     - redding4wetry
   only:
-#   - skip_all_branch
 
 test:
   stage: test
