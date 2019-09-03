@@ -1,6 +1,7 @@
 stages:
   - sanity
-  - build
+  - default-build
+  - kdump-build
   - test
 
 sanity-check:
@@ -11,7 +12,7 @@ sanity-check:
     - redding4wetry
 
 build-broadcom:
-  stage: build
+  stage: default-build
   script:
     - make init
     - make configure PLATFORM=broadcom
@@ -25,7 +26,7 @@ build-broadcom:
     - redding4wetry
 
 build-broadcom-kdump:
-  stage: build
+  stage: kdump-build
   script:
     - make init
     - make configure PLATFORM=broadcom
@@ -37,16 +38,15 @@ build-broadcom-kdump:
     - popd
   tags:
     - redding4wetry
-  only:
-
+    
 test:
   stage: test
   script:
     - git clone git@gitlab.com:gl4sun/integration.git
     - pushd integration
-    - checkout ali
+    - git checkout ali
     - pushd pipeline/kdump/driver
-    - kdump.sh /tmp/stop /tmp/kdump.log reminder4sun@hotmail.com ~/workspace/res/sonic/pkgs/gitlab-runner/target.cur
+    - ./kdump.sh /tmp/stop /tmp/kdump.log reminder4sun@hotmail.com ~/workspace/res/sonic/pkgs/gitlab-runner/target.cur
     - popd
   tags:
    - redding4wetry
