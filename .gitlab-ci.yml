@@ -1,0 +1,46 @@
+stages:
+  - sanity
+  - default-build
+  - test
+
+sanity-check:
+  stage: sanity
+  script:
+    - export
+  tags:
+    - redding4wetry
+
+build-arm:
+  stage: default-build
+  script:
+    - make init
+    - git clone git@github.com:Marvell-switching/sonic-M0-scripts.git
+    - pushd sonic-M0-scripts
+    - git checkout bbd9d0a79b84392dd2c0e25c57e9ba46101f03a9
+    - sed -i "s/exit//" sonic_apply_openPRs_mvl.sh
+    - popd
+    - bash -x sonic-M0-scripts/sonic_apply_openPRs_mvl.sh
+    - make configure PLATFORM=marvell-armhf PLATFORM_ARCH=armhf
+    - make target/sonic-marvell-armhf.bin
+    - sudo chown -R ${LOGNAME}:${LOGNAME} fsroot/*
+    - sudo chown -R ${LOGNAME}:${LOGNAME} dockerfs/*
+    - mv target ~/workspace/res/sonic/pkgs/gitlab-runner/target.${CI_JOB_ID}
+    - pushd ~/workspace/res/sonic/pkgs/gitlab-runner
+    - ln -sfn target.${CI_JOB_ID} target.cur
+    - popd
+  tags:
+    - redding4wetry
+
+test:
+  stage: test
+  script:
+    - git clone git@gitlab.com:gl4sun/integration.git
+    - pushd integration
+    - git checkout ali
+    - pushd pipeline/kdump/driver
+    - ./kdump.sh /tmp/stop /tmp/kdump.log reminder4sun@hotmail.com ~/workspace/res/sonic/pkgs/gitlab-runner/target.cur
+    - popd
+  tags:
+   - redding4wetry
+  only:
+   - whatever
