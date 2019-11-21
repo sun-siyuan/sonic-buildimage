@@ -16,6 +16,7 @@ build-arm:
     - make init
     - git clone git@github.com:Marvell-switching/sonic-M0-scripts.git
     - bash -x sonic-M0-scripts/sonic_apply_openPRs_mvl.sh
+    - sed -i "s/\(SONIC_CONFIG_BUILD_JOBS\)\(.*\)/\1 = 8/g" rules/config      
     - make configure PLATFORM=marvell-armhf PLATFORM_ARCH=armhf
     - make target/sonic-marvell-armhf.bin
     - sudo chown -R ${LOGNAME}:${LOGNAME} fsroot/*
