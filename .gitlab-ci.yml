@@ -15,10 +15,6 @@ build-arm:
   script:
     - make init
     - git clone git@github.com:Marvell-switching/sonic-M0-scripts.git
-    - pushd sonic-M0-scripts
-    - git checkout bbd9d0a79b84392dd2c0e25c57e9ba46101f03a9
-    - sed -i "s/exit//" sonic_apply_openPRs_mvl.sh
-    - popd
     - bash -x sonic-M0-scripts/sonic_apply_openPRs_mvl.sh
     - make configure PLATFORM=marvell-armhf PLATFORM_ARCH=armhf
     - make target/sonic-marvell-armhf.bin
