@@ -1,0 +1,26 @@
+stages:
+  - sanity
+  - default-build
+  - tcb-build
+  - test
+
+sanity-check:
+  stage: sanity
+  script:
+    - export
+  tags:
+    - redding4wetry
+
+build-broadcom:
+  stage: default-build
+  script:
+    - make init
+    - make configure PLATFORM=broadcom
+    - make target/sonic-broadcom.bin
+    - sudo chown -R ${LOGNAME}:${LOGNAME} fsroot/*
+    - mv target ~/workspace/res/sonic/pkgs/gitlab-runner/target.tcb.${CI_JOB_ID}
+    - pushd ~/workspace/res/sonic/pkgs/gitlab-runner
+    - ln -sfn target.tcb.${CI_JOB_ID} target.tcb
+    - popd
+  tags:
+    - redding4wetry
